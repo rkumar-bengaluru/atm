@@ -51,7 +51,7 @@ class ATMTest {
 	void testWithdraw01() {
 		deposit01();
 		deposit02();
-		instance.withdrawn(75);
+		instance.withdraw(75);
 		// one dollar bills
 		assertEquals(instance.getSumOfBills()[0], 4);
 		// five dollar bills
@@ -66,8 +66,8 @@ class ATMTest {
 	void testWithdraw02() {
 		deposit01();
 		deposit02();
-		instance.withdrawn(75);
-		instance.withdrawn(122);
+		instance.withdraw(75);
+		instance.withdraw(122);
 		// one dollar bills
 		assertEquals(instance.getSumOfBills()[0], 2);
 		// five dollar bills
@@ -82,21 +82,21 @@ class ATMTest {
 	void testWithdraw03() {
 		deposit01();
 		deposit02();
-		instance.withdrawn(75);
-		instance.withdrawn(122);
-		assertFalse(instance.withdrawn(63));
+		instance.withdraw(75);
+		instance.withdraw(122);
+		assertFalse(instance.withdraw(63));
 	}
 
 	@Test
 	void testWithdraw4() {
 		ATM instance = new ATM();
-		assertFalse(instance.withdrawn(0));
+		assertFalse(instance.withdraw(0));
 	}
 
 	@Test
 	void testWithdraw5() {
 		ATM instance = new ATM();
-		assertFalse(instance.withdrawn(-25));
+		assertFalse(instance.withdraw(-25));
 	}
 
 	@BeforeAll

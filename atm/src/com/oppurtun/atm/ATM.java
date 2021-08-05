@@ -114,7 +114,7 @@ public class ATM {
 		return billCounter;
 	}
 
-	public boolean withdrawn(int totalAmount) {
+	public boolean withdraw(int totalAmount) {
 		// check if we have enough funds.
 		recalculate();
 		if ((totalAmount > totalBalance) || totalAmount <= 0) {
@@ -151,24 +151,6 @@ public class ATM {
 			return false;
 		}
 		return true;
-	}
-
-	public void withdraw(int totalAmount) {
-		System.out.println("Your Choice is Withdraw");
-		int balanceAmount = totalAmount;
-		for (int i = sumOfAllBills.length - 1; i >= 0; i--) {
-			System.out.println("totalAmount-" + totalAmount + ", bills[i] - " + bills[i]);
-			if (totalAmount > bills[i] && sumOfAllBills[i] > 0 && balanceAmount > 0) {
-				int quotient = balanceAmount / (sumOfAllBills[i] * bills[i]);
-				balanceAmount = balanceAmount % bills[i];
-
-				System.out.println("balanceAmount - " + balanceAmount);
-				System.out.println("Dispensed - " + quotient + "* " + bills[i] + ",quotient -" + quotient);
-				System.out.println("sumOfAllBills[i] " + sumOfAllBills[i]);
-				sumOfAllBills[i] = sumOfAllBills[i] - quotient;
-			}
-		}
-		print();
 	}
 
 	/**
