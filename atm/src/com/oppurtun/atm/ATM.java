@@ -16,7 +16,8 @@ public class ATM {
 	 * represent no of available notes. Example: in the begining all values are 0
 	 * and there is no balance in this atm.
 	 */
-	private int[] sumOfAllBills = { 0, 0, 0, 0, 0 };
+	private int[] sumOfAllBills = { 0, 0, 0, 0, 0, 0 };
+
 	/**
 	 * While you can use sumOfAllBills to find the total balance, this variable will
 	 * be easy access total balance amount.
@@ -46,25 +47,30 @@ public class ATM {
 				+ 20 * twentyDollarBills;
 		print();
 	}
+	
+	public int[] getSumOfBills() {
+		return sumOfAllBills;
+	}
 
 	/**
 	 * print the available new balances in each denomination and the total balance
 	 * 
 	 */
 	private void print() {
+		recalculate();
 		System.out.println("--1--5--10--20--");
 		System.out.println(
 				"--" + sumOfAllBills[0] + "--" + sumOfAllBills[1] + "--" + sumOfAllBills[2] + "--" + sumOfAllBills[3]);
 		System.out.println("totalBalance -" + totalBalance);
 	}
-	
+
 	/**
 	 * recalculate total
 	 */
 	private void recalculate() {
 		totalBalance = 0;
-		for(int i = 0; i < sumOfAllBlils.length; i++) {
-			totalBalance = totalBalance + 
+		for (int i = 0; i < sumOfAllBills.length; i++) {
+			totalBalance = totalBalance + sumOfAllBills[i] * bills[i];
 		}
 	}
 
@@ -108,21 +114,58 @@ public class ATM {
 		return billCounter;
 	}
 
+	public boolean withdrawn(int totalAmount) {
+		// check if we have enough funds.
+		recalculate();
+		if ((totalAmount > totalBalance) || totalAmount <= 0) {
+			System.out.println("Incorrect or insufficient funds");
+			return false;
+		}
+		int toDispense = totalAmount;
+		//System.out.println("toDispense - " + toDispense);
+		for (int i = sumOfAllBills.length - 1; i >= 0; i--) {
+			System.out.println("toDispense - " + toDispense);
+			if (toDispense >= bills[i] && sumOfAllBills[i] > 0 && toDispense > 0) {
+				int quotient = toDispense / (bills[i]);
+				//System.out.println("quotient=" + quotient);
+				int maxBills = 0;
+				if ((bills[i] * sumOfAllBills[i]) < toDispense) {
+					maxBills = Math.min(quotient, sumOfAllBills[i]);
+				} else {
+					maxBills = quotient;
+				}
+
+				toDispense = toDispense - maxBills * bills[i];
+				System.out.println("dispensed=" + maxBills + "*" + bills[i]);
+
+				sumOfAllBills[i] = sumOfAllBills[i] - maxBills;
+			}
+			print();
+		}
+		// please note that some of the bills are already reduced &
+		// that needs to be fixed. we can array copy and backtrack
+		// if not possible
+		// TODO
+		if (toDispense > 0) {
+			System.out.println("Requested withdraw amount is not dispensable");
+			return false;
+		}
+		return true;
+	}
+
 	public void withdraw(int totalAmount) {
 		System.out.println("Your Choice is Withdraw");
 		int balanceAmount = totalAmount;
-		for (int i = bills.length - 1; i >= 0; i--) {
+		for (int i = sumOfAllBills.length - 1; i >= 0; i--) {
 			System.out.println("totalAmount-" + totalAmount + ", bills[i] - " + bills[i]);
 			if (totalAmount > bills[i] && sumOfAllBills[i] > 0 && balanceAmount > 0) {
-				if (balanceAmount > 0) {
-					int quotient = balanceAmount / bills[i];
-					balanceAmount = balanceAmount % bills[i];
-					totalBalance = totalBalance - sumOfAllBills[i] * quotient;
-					System.out.println("totalAmount - " + totalAmount);
-					System.out.println("Dispensed - " + quotient + "* " + bills[i] + ",quotient -" + quotient);
-					System.out.println("sumOfAllBills[i] " + sumOfAllBills[i]);
-					sumOfAllBills[i] = sumOfAllBills[i] - quotient;
-				}
+				int quotient = balanceAmount / (sumOfAllBills[i] * bills[i]);
+				balanceAmount = balanceAmount % bills[i];
+
+				System.out.println("balanceAmount - " + balanceAmount);
+				System.out.println("Dispensed - " + quotient + "* " + bills[i] + ",quotient -" + quotient);
+				System.out.println("sumOfAllBills[i] " + sumOfAllBills[i]);
+				sumOfAllBills[i] = sumOfAllBills[i] - quotient;
 			}
 		}
 		print();
@@ -137,6 +180,7 @@ public class ATM {
 	 * @return
 	 */
 	private int[] simulateBillsFromAmount(int amount) {
+		// TODO
 		return null;
 	}
 
@@ -146,9 +190,8 @@ public class ATM {
 		}
 	}
 
-	public static void main(String[] args) {
+	private void askInput(ATM instance) {
 		Scanner scanner = new Scanner(System.in);
-		ATM instance = new ATM();
 		boolean keepRunning = true;
 
 		while (keepRunning) {
@@ -248,6 +291,12 @@ public class ATM {
 
 		scanner.close();
 		System.out.println("Thank you!");
+	}
+
+	public static void main(String[] args) {
+		ATM instance = new ATM();
+		instance.askInput(instance);
+
 	}
 
 }
